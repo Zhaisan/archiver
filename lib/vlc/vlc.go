@@ -1,13 +1,12 @@
 package vlc
 
 import (
-	"fmt"
 	"log"
 	"strings"
 	"unicode"
 )
 
-func Encode(str string) string {
+func Encode(str string) []byte {
 	// prepare text: M -> !m
 	str = prepareText(str)
 
@@ -16,21 +15,14 @@ func Encode(str string) string {
 
 	// split binary by chunks (8): bits to bytes -> '10010101 10010101 10010101'
 	chunks := splitByChunks(bStr, chunksSize)
-	fmt.Println(chunks)
 
 	// bytes to hex: '20 30 3C'
 
-	return chunks.ToHex().ToString()
+	return chunks.Bytes()
 }
 
-func Decode(encodedText string) string {
-	hChunks := NewHexChunks(encodedText)
-
-	// hex chunks -> binary chunks
-	bChunks := hChunks.ToBinary()
-
-	// bChunks -> binary string
-	bString := bChunks.Join()
+func Decode(encodedData []byte) string {
+	bString := NewBinChunks(encodedData).Join()
 
 	// building decoding tree
 	// bString (dTree) -> text
@@ -95,7 +87,6 @@ func getEncodingTable() encodingTable {
 	}
 }
 
-
 // prepareText prepares text to be fit for encode:
 // changes upper case letters to: ! + lower case letter
 // i.g.: My name is Ted -> !my name is !ted
@@ -114,7 +105,6 @@ func prepareText(str string) string {
 	return buf.String()
 }
 
-
 // exportText is opposite to prepareText, it prepares decoded text to expert
 // it changes: ! + <lower case letter> -> to upper case letter
 // i.g.: !my name is !ted -> My name is Ted
@@ -132,7 +122,7 @@ func exportText(str string) string {
 		}
 
 		if ch == '!' {
-			isCapital  = true
+			isCapital = true
 			continue
 		} else {
 			buf.WriteRune(ch)

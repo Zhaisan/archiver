@@ -34,22 +34,22 @@ func Test_splitByChunks(t *testing.T) {
 	}
 }
 
-func TestNewHexChunks(t *testing.T) {
+func TestNewBinChunks(t *testing.T) {
 	tests := []struct {
 		name string
-		str  string
-		want HexChunks
+		data []byte
+		want BinaryChunks
 	}{
 		{
 			name: "base test",
-			str: "20 30 3C 18",
-			want: HexChunks{"20", "30", "3C", "18"},
+			data: []byte{20, 30, 60, 18},
+			want: BinaryChunks{"00010100", "00011110", "00111100", "00010010"},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewHexChunks(tt.str); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewHexChunks() = %v, want %v", got, tt.want)
+			if got := NewBinChunks(tt.data); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("NewBinChunks() = %v, want %v", got, tt.want)
 			}
 		})
 	}

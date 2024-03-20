@@ -11,9 +11,9 @@ import (
 )
 
 var vlcPackCmd = &cobra.Command{
-	Use: "vlc",
+	Use:   "vlc",
 	Short: "Pack file using variable-length code",
-	Run: pack,
+	Run:   pack,
 }
 
 const packedExtension = "vlc"
@@ -39,7 +39,7 @@ func pack(_ *cobra.Command, args []string) {
 
 	packed := vlc.Encode(string(data))
 
-	err = os.WriteFile(packedFileName(filePath), []byte(packed), 0644)
+	err = os.WriteFile(packedFileName(filePath), packed, 0644)
 	if err != nil {
 		handleErr(err)
 	}
@@ -48,8 +48,8 @@ func pack(_ *cobra.Command, args []string) {
 
 func packedFileName(path string) string {
 	// path = /path/to/file/myFile.txt
-	fileName := filepath.Base(path) // myFile.txt
-	ext := filepath.Ext(fileName) // txt
+	fileName := filepath.Base(path)               // myFile.txt
+	ext := filepath.Ext(fileName)                 // txt
 	baseName := strings.TrimSuffix(fileName, ext) // 'myFile.txt' - '.txt' = 'myFile'
 
 	return baseName + "." + packedExtension
